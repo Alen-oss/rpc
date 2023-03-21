@@ -1,2 +1,6 @@
 server:
   port: 8081
+rpc:
+  port: 2781
+  registerType: ZOOKEEPER
+  registerAddr: 127.0.0.1:2181
