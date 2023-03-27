@@ -1,7 +1,11 @@
 package com.wtgroup.rpcserver.domain;
 
 import com.wtgroup.rpcserver.annotation.RpcService;
+import com.wtgroup.rpcserver.handler.RpcDecoder;
+import com.wtgroup.rpcserver.handler.RpcEncoder;
+import com.wtgroup.rpcserver.handler.RpcRequestHandler;
 import com.wtgroup.rpcserver.registry.RegistryService;
+import com.wtgroup.rpcserver.registry.meta.ServiceMeta;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -20,6 +24,9 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 作为RPC服务的提供者，即服务方
@@ -34,7 +41,9 @@ public class RpcProvider implements InitializingBean, BeanPostProcessor {
     // 负责注册RPC服务的接口实现类
     private RegistryService registryService;
     // 内存中缓存RPC服务映射表
-    private final Map<String, Object> rpcServiceMap = new HashMap<>();
+    private final HashMap<String, Object> rpcServiceMap = new HashMap<>();
+    // 线程池
+    private static ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(10, 10, 60L, TimeUnit.SECONDS, new ArrayBlockingQueue<>(1000));
 
     public RpcProvider(int port, RegistryService registryService) {
         this.port = port;
@@ -109,14 +118,20 @@ public class RpcProvider implements InitializingBean, BeanPostProcessor {
             bootstrap.group(boss, worker)
                     // 指定服务端的IO模型：NIO
                     .channel(NioServerSocketChannel.class)
+                    // 自定义服务端在启动过程中的一些逻辑，一般情况下不用这个方法的
+                    .handler(new ChannelInitializer<NioServerSocketChannel>() {
+                        protected void initChannel(NioServerSocketChannel ch) {
+                            System.out.println("服务端正在启动...");
+                        }
+                    })
                     // 开始定义每个连接的读写
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             socketChannel.pipeline()
-                                    .addLast()
-                                    .addLast()
-                                    .addLast();
+                                    .addLast(new RpcDecoder())
+                                    .addLast(new RpcRequestHandler(threadPoolExecutor, rpcServiceMap))
+                                    .addLast(new RpcEncoder());
                         }
                     })
                     // 给每个连接设置一些TCP的参数，这里开启了探活机制

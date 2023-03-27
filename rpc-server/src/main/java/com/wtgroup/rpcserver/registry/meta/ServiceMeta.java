@@ -1,4 +1,4 @@
-package com.wtgroup.rpcserver.domain;
+package com.wtgroup.rpcserver.registry.meta;
 
 import lombok.Data;
 

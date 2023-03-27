@@ -1,6 +1,6 @@
 package com.wtgroup.rpcserver.registry;
 
-import com.wtgroup.rpcserver.domain.ServiceMeta;
+import com.wtgroup.rpcserver.registry.meta.ServiceMeta;
 
 /**
  * 服务注册的接口

@@ -1,6 +1,6 @@
 package com.wtgroup.rpcserver.conf;
 
-import com.wtgroup.rpcserver.domain.RegistryType;
+import com.wtgroup.rpcserver.registry.meta.RegistryTypeEnum;
 import com.wtgroup.rpcserver.domain.RpcProvider;
 import com.wtgroup.rpcserver.registry.RegistryService;
 import com.wtgroup.rpcserver.registry.factory.RegistryServiceFactory;
@@ -20,8 +20,8 @@ public class RpcProviderAutoConfiguration {
     @Bean
     public RpcProvider createRpcProvider() {
         // 枚举类自带的valueOf()方法会将与枚举类元素相同名称的字符串转化为枚举类中的对应元素
-        RegistryType registryType = RegistryType.valueOf(properties.getRegisterType());
-        RegistryService registryService = RegistryServiceFactory.createRegistryService(registryType, properties.getRegisterAddr());
+        RegistryTypeEnum registryTypeEnum = RegistryTypeEnum.valueOf(properties.getRegisterType());
+        RegistryService registryService = RegistryServiceFactory.createRegistryService(registryTypeEnum, properties.getRegisterAddr());
         return new RpcProvider(properties.getPort(), registryService);
     }
 }
