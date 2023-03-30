@@ -1,9 +1,9 @@
 package com.wtgroup.rpcserver.conf;
 
-import com.wtgroup.rpcserver.registry.meta.RegistryTypeEnum;
-import com.wtgroup.rpcserver.domain.RpcProvider;
-import com.wtgroup.rpcserver.registry.RegistryService;
-import com.wtgroup.rpcserver.registry.factory.RegistryServiceFactory;
+import com.wtgroup.rpccore.common.RegistryTypeEnum;
+import com.wtgroup.rpcregistry.RegistryServiceFactory;
+import com.wtgroup.rpcregistry.service.RegistryService;
+import com.wtgroup.rpcserver.RpcProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;

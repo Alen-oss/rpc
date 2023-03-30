@@ -8,6 +8,9 @@
     <modules>
         <module>rpc-client</module>
         <module>rpc-server</module>
+        <module>rpc-core</module>
+        <module>rpc-registry</module>
+        <module>rpc-facade</module>
     </modules>
 
     <parent>
@@ -43,6 +46,11 @@
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
             <version>4.1.42.Final</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
     </dependencies>
 

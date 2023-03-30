@@ -1,6 +1,5 @@
 package com.wtgroup.rpcserver.annotation;
 
-
 import org.springframework.stereotype.Component;
 
 import java.lang.annotation.ElementType;

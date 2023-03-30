@@ -9,29 +9,24 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>rpc-client</artifactId>
+    <artifactId>rpc-core</artifactId>
 
     <dependencies>
 
+        <!-- hessian序列化依赖 -->
         <dependency>
-            <groupId>com.wtgroup</groupId>
-            <artifactId>rpc-core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <groupId>com.caucho</groupId>
+            <artifactId>hessian</artifactId>
+            <version>4.0.38</version>
         </dependency>
 
+        <!-- kryo序列化依赖 -->
         <dependency>
-            <groupId>com.wtgroup</groupId>
-            <artifactId>rpc-registry</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.wtgroup</groupId>
-            <artifactId>rpc-facade</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo</artifactId>
+            <version>5.4.0</version>
         </dependency>
 
     </dependencies>
-
 
 </project>
