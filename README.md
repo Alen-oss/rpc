@@ -1,0 +1,38 @@
+# rpc
+一个mini的RPC项目（属于照抄的，原版可以看我fork的别人的项目）
+
+rpc-cilent逻辑流程：
+
+RpcClientPostProcessor（这个类是阅读的起点）
+这个类 implements ApplicationContextAware, BeanClassLoaderAware, BeanFactoryPostProcessor
+Spring中以Aware结尾的接口会帮助我们感受到容器的诸多信息：这两个接口可以设置ApplicationContext和ClassLoader。
+BeanFactoryPostProcessor接口的扩展点可以帮我们插手BeanDefinition的定义阶段。
+（1）通过实现BeanFactoryPostProcessor接口的postProcessBeanFactory方法我们遍历容器现有定义的所有BeanDefinition信息，通过BeanDefinition和ClassUtils（类工具），以forName的方式反射拿到所有的Class对象
+（2）所有的Class对象经由ReflectionUtils（反射工具类）对其所有field成员进行校验，查看field上是否有@RpcReference注解，没有的话则直接跳过不处理
+（3）存在@RpcReference注解的话则通过BeanDefinitionBuilder（构建者模式）依据注解信息创建相应的BeanDefinition
+（4）注册上一步创建的BeanDefinition进Spring容器（BeanDefinitionRegistry.registerBeanDefinition()方法），后续这些BeanDefiniton对象将随着容器启动注册成Bean对象
+（5）RpcReferenceBean为上一步我们注册的Bean对象，看这个类的实现会发现这个类实现了FactoryBean接口，代表这个类是一个Bean工厂，了解这个接口的话我们会知道，我们最终获取的bean对象是getObejct()的返回值，即代码逻辑中为我们生成的代理对象（这个代理对象的source为interfaceClass参数，即标注@RpcReference的成员类型）
+
+总结下，这段逻辑的目的就是为@RpcReference标注的成员变量生成其代理类，等后续我们使用的时候就是通过代理调用了。在代理对象中我们可以对代码进行增强。
+
+rpc-server逻辑流程：
+
+RpcProvider（这个类是阅读的起点）
+这个类implements InitializingBean, BeanPostProcessor
+InitializingBean是初始化之后执行的扩展点，BeanPostProcessor也是初始化之后的扩展点，按照生命周期的排序，InitializingBean是在BeanPostProcessor前面的。
+InitializingBean重写的方法主要是启动Netty的服务端，BeanPostProcessor重写的方法将@RpcService标注的类注册到ZooKeeper中。
+
+代码中整理出的重要知识点：
+
+（1）Spring的扩展点
+（2）代理模式
+（3）Netty的知识（需要你对Netty的整体流程都有个清晰的认识）
+（4）Netty的Promise类（个人觉得理解这个还是很重要的）
+
+在这个RPC项目中：
+（1）Zookeeper负责服务的注册和发现（发现上包含实现负载均衡功能）
+（2）Netty客户端和服务端搭建了网络通信的整体框架
+（3）序列化方法的实现
+（4）自定义协议的生成
+（5）客户端代理模式发送请求
+（6）服务端通过request请求的参数（类名、方法名、方法类型、方法入参）利用反射执行方法的访问
