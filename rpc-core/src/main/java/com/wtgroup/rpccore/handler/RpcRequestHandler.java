@@ -54,7 +54,7 @@ public class RpcRequestHandler extends SimpleChannelInboundHandler<RpcProtocol<R
     }
 
     /**
-     * 调用远程方法
+     * 通过反射执行请求方法
      */
     private Object handle(RpcRequest request) throws Throwable {
         String serviceKey = String.join("#", request.getClassName(), request.getServiceVersion());

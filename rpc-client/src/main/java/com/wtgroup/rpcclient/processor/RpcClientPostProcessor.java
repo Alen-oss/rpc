@@ -51,6 +51,7 @@ public class RpcClientPostProcessor implements ApplicationContextAware, BeanClas
 
         for (String beanDefinitionName : beanFactory.getBeanDefinitionNames()) {
             BeanDefinition beanDefinition = beanFactory.getBeanDefinition(beanDefinitionName);
+            // 这里解释下，BeanDefinitionName并不一定等于BeanClassName，所以这里还有很有必要的
             String beanClassName = beanDefinition.getBeanClassName();
             if (beanClassName != null) {
                 // 通过反射拿到Class对象

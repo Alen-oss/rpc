@@ -53,6 +53,7 @@ public class RpcInvokerProxy implements InvocationHandler {
         RpcFuture<RpcResponse> future = new RpcFuture<>(new DefaultPromise<>(new DefaultEventLoop()), timeout);
         RpcRequestHolder.REQUEST_MAP.put(requestId, future);
         rpcClient.sendRequest(protocol, this.registryService);
+        // get阻塞到过期时间，等待结果
         return future.getPromise().get(future.getTimeout(), TimeUnit.MILLISECONDS).getData();
     }
 }

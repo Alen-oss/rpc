@@ -14,6 +14,7 @@ public class RpcResponseHandler extends SimpleChannelInboundHandler<RpcProtocol<
 
         long requestId = msg.getProtocolHeader().getRequestId();
         RpcFuture<RpcResponse> future = RpcRequestHolder.REQUEST_MAP.remove(requestId);
+        // 接收返回值，设置结果：Promise<V> setSuccess(V result);
         future.getPromise().setSuccess(msg.getBody());
     }
 }
